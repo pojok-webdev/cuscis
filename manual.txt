@@ -1,0 +1,2 @@
+Cara retrieve pelanggan :
+Semua pelanggan : curl http://localhost:20221/clients
