@@ -32,7 +32,15 @@ executeRequest = obj => {
         })})
     })
 }
-
+save = obj => {
+    con.doQuery(crud.create({
+        tableName:obj.tableName,cols:obj.cols
+    }),res=>{
+        console.log("save res",res)
+        return res
+        //obj.res.send({resullt:res})
+    })
+}
 send = obj => {
     options = {
         hostname:'',port:'',path:'',method:'POST'
@@ -42,20 +50,43 @@ send = obj => {
     })
 }
 sendMessages = obj => {
-    par = obj.req.body
-    par.forEach(recipient => {
-        crud.create({
+    console.log("Obj",obj)
+    obj.recipient.forEach(recipient => {
+        console.log(crud.create({
             tableName:'sentmessages',
-            cols:{
-                ticket_id:par.ticket_id,
-                email:par.email,
-                recipient:recipient,
-                message:par.message
-            }
-        })
+            cols:[
+                    {
+                        key:'ticket_id',val:obj.ticket_id
+                    },{
+                        key:'email',val:obj.email
+                    },{
+                        key:'recipient',val:recipient
+                    },{
+                        key:'message',val:obj.message
+                    }
+            ]
+        }))
     });
+}
+gets = obj => {
+    console.log("CRUDQUERY",crud.gets({
+        tableName:obj.tableName,
+        cols:obj.cols,
+        conditions:obj.conditions
+    }))
+    con.doQuery(crud.gets({
+        tableName:obj.tableName,
+        cols:obj.cols,
+        conditions:obj.conditions
+    }),res=>{
+        console.log("ExecuteRequest",res)
+        /*obj.res.send({"results":res.map(res=>{
+            return {id:res.id,text:res.name}
+        })})*/
+        obj.res.send(res)
+    })
 }
 module.exports = {
     doRequest:doRequest,executeRequest:executeRequest,
-    send:send,sendMessages:sendMessages
+    send:send,sendMessages:sendMessages,save:save,gets:gets
 }

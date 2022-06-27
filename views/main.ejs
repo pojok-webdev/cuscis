@@ -64,93 +64,8 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <div class="col-md-6">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">General</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputStatus">Pemilihan Site Terdampak</label>
-                <select id="siteTypeId" class="form-control custom-select">
-                  <option selected disabled>Pilih </option>
-                  <option>Core</option>
-                  <option>Backbone</option>
-                  <option>BTS</option>
-                  <option>AP</option>
-                  <option>Pelanggan</option>
-                </select>
-              </div>
-              <div class="form-group clienttype" id="dcores">
-                <label for="inputStatus">Cores</label>
-                <select class="form-control select2" id="cores" data-placeholder="Pilih Core" style="width: 100%;">
-                </select>
-              </div>
-              <div class="form-group clienttype" id="dbackbones">
-                <label for="inputStatus">Backbones</label>
-                <select class="form-control select2" id="backbones" data-placeholder="Pilih Backbone" style="width: 100%;">
-                </select>
-              </div>
-              <div class="form-group clienttype" id="dbts">
-                <label for="inputStatus">BTS</label>
-                <select class="form-control select2" id="bts" data-placeholder="Pilih BTS" style="width: 100%;">
-                </select>
-              </div>
-              <div class="form-group clienttype" id="daps">
-                <label for="inputStatus">AP</label>
-                <select class="form-control select2" id="aps" data-placeholder="Pilih AP" style="width: 100%;">
-                </select>
-              </div>
-              <div class="form-group clienttype" id="dclients">
-                <label for="inputStatus">Pelanggan</label>
-                <select class="form-control select2" id="clients" data-placeholder="Pilih Pelanggan" style="width: 100%;">
-                </select>
-              </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-        </div>
-        <div class="col-md-6">
-          <div class="card card-secondary">
-            <div class="card-header">
-              <h3 class="card-title">Budget</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputStatus">Pemilihan Template</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option selected disabled>Select one</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option>Success</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="inputSpentBudget">Total amount spent</label>
-                <input type="number" id="inputSpentBudget" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="inputEstimatedDuration">Estimated project duration</label>
-                <input type="number" id="inputEstimatedDuration" class="form-control">
-              </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-        </div>
+        <%- include('commons/contacts') -%>
+        <%- include('commons/templates') -%>
       </div>
       <div class="row">
         <div class="col-12">
@@ -176,7 +91,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-
+<%- include('contacts/modal-manage-contact') -%>
 <!-- jQuery -->
 <script src="/assets/plugins/jquery/jquery.min.js"></script>
 <script src="/assets/plugins/select2/js/select2.full.min.js"></script>
@@ -186,6 +101,6 @@
 <script src="/assets/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/assets/dist/js/demo.js"></script>
-<script src="/assets/app/main.js?v=1"></script>
+<script src="/assets/app/main.js?v=2"></script>
 </body>
 </html>

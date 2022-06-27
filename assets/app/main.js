@@ -121,15 +121,105 @@
         }
       })
   $("#sendWAs").click(function(){
+    console.log("WA should be sent")
     $.ajax({
       url:'/sendmessages',
       type:'post',
       dataType:'json',
       data:{
+        ticket_id:'123',
         email:'puji@padi.net.id',
-        recipient:['+628813272107'],
-        message:''
+        recipient:['+628813272107','+628885271669'],
+        message:'xxxx'
       }
     })
+  })
+  $("#btnSavePhone").click(function(){
+    console.log("client_id lagi",$("#clients").val())
+    console.log("save clicked")
+    $.ajax({
+      url:'/savephone',
+      type:'post',
+      data:{
+        client_id:$("#clients").val(),
+        picname:$('#picname').val(),
+        picrole:$('#picrole').val(),
+        picphone:$('#picphone').val()
+      },
+//      dataType:'json'
+    })
+    .done(res=>{
+      console.log("Res of",res)
+      str = '<tr>'
+      str+='<td>'+$('#picphone').val()+'</td>'
+      str+='<td>'+$('#picname').val()+'</td>'
+      str+='<td>'+$('#picrole').val()+'</td>'
+      str+='<td class="btnHapusTelp">hapus</td>'
+      str+='</tr>'
+      str+=''
+      console.log("STE",str)
+      $("#tblphones tbody").append(str)
+    })
+    .fail(err=>{
+      console.log("Err save Phone",err)
+    })
+  })
+  $("#btnManageClientPhone").hide()
+  $("#clients").change(function(){
+    console.log('client val',$(this).val())
+    if(!isNaN($(this).val())){
+      $("#btnManageClientPhone").show()
+    }else{
+      $("#btnManageClientPhone").hide()
+    }
+
+  })
+  $('#tblphones tbody').on('click','.btnHapusTelp',function(){
+    console.log('EL',$(this).parent().parent().html())
+    $.ajax({
+      url:'/removePhone',
+    })
+  })
+  $("#btnManageClientPhone").click(function(){
+    console.log("client_id",$("#clients").val())
+    console.log("clientname",$("#clients :selected").text())
+    $('#tblphones tbody').empty()
+    $.ajax({
+      url:'/getphones/'+$('#clients').val(),
+      dataType:'json'
+    })
+    .done(res=>{
+      console.log('Res',res)
+      res.forEach(element => {
+        str = '<tr trid='+element.id+'>'
+        str+='<td>'+element.picphone+'</td>'
+        str+='<td>'+element.picname+'</td>'
+        str+='<td>'+element.picrole+'</td>'
+        str+='<td class="btnHapusTelp">Hapus</td>'
+        str+='</tr>'
+        str+=''
+        $('#tblphones tbody').append(str)
+      });
+      $("#manage-contact-xl").modal()      
+    })
+    .fail(err=>{
+      console.log("Err rtreve phones",err)
+    })
+  })
+  $("#manage-contact-xl").on('show.bs.modal',function(e){
+    console.log("E",e)
+  })
+  $("#inputStatus").change(function(){
+    		$.ajax({
+					url:"https://api.telegram.org/bot201184174:AAH2Fy_3wS8A5KGi2cn468dtFCMJjhOqISQ/sendMessage",
+					data:{"chat_id":"@Padi","text":"boooohoooo"},
+					headers: {
+						'Access-Control-Allow-Origin':'*'
+					},
+					crossDomain:true,
+					type:'post',
+					dataType:'jsonp'
+				});
+
   })
 }(jQuery))
