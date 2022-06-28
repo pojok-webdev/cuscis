@@ -15,3 +15,6 @@ wget https://api.telegram.org/bot-5587641206:AAESBCBjh1UL_hM1cEl-c3Jifp4KOM2O9oc
 
 
 10010566
+
+2022-06-27
+penambahan master custom

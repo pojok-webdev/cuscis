@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <%- include('../commons/head') -%>
+  <link rel="stylesheet" href="/assets/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
   <!-- Navbar -->
@@ -48,44 +51,49 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        <!-- SELECT2 EXAMPLE -->
+        <!-- /.card -->
+
+        <!-- SELECT2 EXAMPLE -->
+        <!-- /.card -->
+        <!-- /.card -->
+
         <div class="row">
-          <div class="col-12">
-            <div class="card">
+          <div class="col-md-12">
+
+            <div class="card card-danger">
               <div class="card-header">
-                <h3 class="card-title"></h3>
+                <h3 class="card-title">Penambahan Kategori</h3>
               </div>
-              <!-- /.card-header -->
               <div class="card-body">
-                <table id="tObj" class="table table-bordered table-hover">
-                  <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nama</th>
-                    <th>BTS</th>
-                    <th>Cabang</th>
-                    <th>Aksi</th>
-                  </tr>
-                  </thead>
-                  <tbody></tbody>
-                  <tfoot>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nama</th>
-                    <th>BTS</th>
-                    <th>Cabang</th>
-                    <th>Aksi</th>
-                  </tr>
-                  </tfoot>
-                </table>
+                <!-- Date dd/mm/yyyy -->
+                <div class="form-group">
+                  <label>Nama Kategori:</label>
+                  <input type="text" class="form-control" id="messagecategoryname">
+                </div>
+                <div class="form-group">
+                  <label>Parent:</label>
+                  <select class="form-control" id="messageCategoryParentId">
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Keterangan:</label>
+                  <textarea class="form-control" id="messagecategorydescription"></textarea>
+                </div>
+                <button class="btn btn-primary" id="btnSaveMessageCategory">Simpan</button>
+
               </div>
               <!-- /.card-body -->
             </div>
             <!-- /.card -->
-
             <!-- /.card -->
+
           </div>
-          <!-- /.col -->
+          <!-- /.col (left) -->
+          <!-- /.col (right) -->
         </div>
+        <!-- /.row -->
+        <!-- /.row -->
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
@@ -101,7 +109,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<%- include('../bts/modal-manage-bts') -%>
+<%- include('../contacts/modal-manage-contact') -%>
 <!-- jQuery -->
 <script src="/assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -119,83 +127,60 @@
 <script src="/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="/assets/app/common.js"></script>
 <!-- AdminLTE App -->
+<script src="/assets/plugins/select2/js/select2.full.min.js"></script>
 <script src="/assets/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/assets/dist/js/demo.js"></script>
-<script src="/assets/app/common.js"></script>
 <!-- Page specific script -->
 <script>
-  $(function () {
-    $('#tObj').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-      ajax:{
-        url:"/getapsdatatabledata",
-        type:'post',
-        data:{
-          tablename:'aps',
-          cols:['id','name','tipe','macboard','description','btstower_id'],
-        }
-        },
-        "columnDefs": [ 
-          {
-              "targets": 4,
-              "data": null,
-              "defaultContent":'<div class="btn-group"><button type="button" class="btn btn-default">Action</button><button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown"><span class="sr-only">Toggle Dropdown</span></button><div class="dropdown-menu" role="menu"><a class="dropdown-item btnManageBts" style="cursor:pointer">Pemindahan BTS</a></div></div>'
-          },
-          {
-            targets:1,
-            className:"clientname"
-          },
-          {
-            targets:0,
-            className:'trid'
-          }]
-    });
-  });
-  $('#tObj').on('click','.btnManageBts',function(){
-    $('#tObj tr').removeClass('selected')
-    tr = $(this).stairUp({level:4})
-    tr.addClass('selected')
-    $('#show-bts').modal()
+  console.log("Select dua")
+  $("#messageCategoryParentId").select2({
+    ajax:{
+      url:'/getallmessagecategories',dataType:'json',
+      processResults:res=>{
+        return {results:res}
+      }
+    }
   })
-    $('#tblbts').DataTable({
-      ajax:{
-        url:'/getbtsdatatabledata',
-        type:'post',
-        cols:['id','name','tipe','macboard','description','btstower_id'],
-      },
-      "columnDefs": [ 
-        {
-            "targets": 3,
-            "data": null,
-            "defaultContent":'<div class="btn-group"><button type="button" class="btn btn-default">Action</button><button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown"><span class="sr-only">Toggle Dropdown</span></button><div class="dropdown-menu" role="menu"><a class="dropdown-item btnUseBts" style="cursor:pointer">Gunakan BTS</a></div></div>'
-        },
-        {
-          targets:0,
-          className:'trid'
-        }
-      ]
+  saveCustomMaster = obj => {
+    $.ajax({
+      url:'/savemessagecategory',
+      dataType:'json',
+      type:'post',
+      data:{
+        parent_id:obj.selectedParent,
+        name:$('#messagecategoryname').val(),
+        description:$('#messagecategorydescription').val()
+      }
     })
-    $('#tblbts').on('click','.btnUseBts',function(){
-      tr = $(this).stairUp({level:4})
-      $.ajax({
-        url:'/associatebtsap/'+tr.find('.trid').text()+'/'+$('#tObj tr.selected').find('.trid').text()
-      })
-      .done(res=>{
-        console.log('AssociateBtsAp',res)
-        $('#show-bts').modal('hide')
-      })
-      .fail(err=>{
-        console.log('Err AssociateBtsAp',err)
-      })
+    .done(res=>{
+      console.log("Res save message category",res)
+      $('.nav-item').css('color','red')
     })
+    .fail(err=>{
+      console.log("Err save message category",err)
+      $('.nav-item').css('color','blue')
+    })
+  }
+  $('#btnSaveMessageCategory').click(function(){
+    if($('#messageCategoryParentId').select2('data').length>0){
+      saveCustomMaster({
+        selectedParent:$('#messageCategoryParentId').select2('data')[0].id
+      })
+    }else{
+      saveCustomMaster({selectedParent:0})
+    }
+  })
+  populateParent = _ => {
+    $.ajax({
+      url:'/'
+    })
+    .done(res=>{
+      $('#messageCategoryParentId')
+    })
+  }
 </script>
 </body>
 </html>

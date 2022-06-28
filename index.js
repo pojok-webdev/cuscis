@@ -184,7 +184,40 @@ i.app.get('/associatebtsap/:bts_id/:ap_id',(req,res)=>{
     cols:[{key:'btstower_id',val:req.params.bts_id}],conditions:[{key:'id',val:req.params.ap_id}]}),result=>{
       res.send(result)
     })
-    
+})
+i.app.get('/getmessagecategories/:parent_id',(req,res)=>{
+  var params = req.params
+  i.con.doQuery(i.crud.gets({
+    tableName:'qiscus.messagecategories',
+    cols:['id','name','description','parent_id'],
+    conditions:[{key:'parent_id',val:params.parent_id}]}),result=>{
+      res.send(result.map(obj=>{return {id:obj.id,text:obj.name}}))
+  })
+})
+i.app.get('/getallmessagecategories',(req,res)=>{
+  i.con.doQuery(i.crud.gets({
+    tableName:'qiscus.messagecategories',
+    cols:['id','name','description','parent_id'],
+    conditions:[{key:'1',val:'1'}]
+  }),result=>{
+    res.send(result.map(obj=>{return {id:obj.id,text:obj.name}}))
+  })
+})
+i.app.post('/savemessagecategory',(req,res)=>{
+  var params = req.body
+  i.con.doQuery(i.crud.create({
+    tableName:'qiscus.messagecategories',
+    cols:[
+      {key:'name',val:params.name},
+      {key:'description',val:params.description},
+      {key:'parent_id',val:params.parent_id}
+    ]}),result=>{
+      console.log('ajax result',result)
+      res.send(result)
+    })
+})
+i.app.get('/messagecategories',(req,res)=>{
+  res.render('masters/messagecategories',{'title':'Mastre Categoree'})
 })
 i.app.listen(i.setting.port,_=>{
     console.log('QisCus API Server start at port ',i.setting.port)
