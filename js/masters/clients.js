@@ -19,7 +19,16 @@ $(function () {
           {
               "targets": 8,
               "data": null,
-              "defaultContent":'<div class="btn-group"><button type="button" class="btn btn-default">Action</button><button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown"><span class="sr-only">Toggle Dropdown</span></button><div class="dropdown-menu" role="menu"><a class="dropdown-item btnEditClient" style="cursor:pointer">Edit</a><a class="dropdown-item btnEditCategory" style="cursor:pointer;background:aliceblue">Manage Kategori</a><a class="dropdown-item btnRemoveClient" style="cursor:pointer;background:red">Hapus</a></div></div>'
+              "defaultContent":'<div class="btn-group">'
+              +'<button type="button" class="btn btn-default">Aksi</button>'
+              +'<button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">'
+              +'<span class="sr-only">Toggle Dropdown</span></button>'
+              +'<div class="dropdown-menu dropdown-menu-right" role="menu">'
+              +'<a class="dropdown-item btnEditClient" style="cursor:pointer">Edit</a>'
+              +'<a class="dropdown-item btnEditCategory" style="cursor:pointer;background:aliceblue">Pengaturan Kategori</a>'
+              +'<div class="dropdown-divider"></div>'
+              +'<a class="dropdown-item btnRemoveClient" style="cursor:pointer;color:red;"><i class="fa fa-bell"></i>Hapus</a></div>'
+              +'</div>'
           },
           {
             targets:7,
@@ -55,7 +64,7 @@ $(function () {
           }],
           buttons:[{
             text: 'Penambahan',
-            className:'btn btn-primary',
+            className:'btn btn-success',
             action: function ( e, dt_, node, config ) {
                 $('#add-client').modal({
                     backdrop:'static'

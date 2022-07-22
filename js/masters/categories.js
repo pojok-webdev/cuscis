@@ -17,13 +17,14 @@ $(function () {
               "targets": 4,
               "data": null,
               "defaultContent":'<div class="btn-group">'
-                +'<button type="button" class="btn btn-default">Action</button>'
+                +'<button type="button" class="btn btn-default">Aksi</button>'
                 +'<button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">'
                   +'<span class="sr-only">Toggle Dropdown</span></button>'
-                  +'<div class="dropdown-menu" role="menu">'
+                  +'<div class="dropdown-menu dropdown-menu-right" role="menu">'
                     +'<a class="dropdown-item btnEditClient" style="cursor:pointer">Edit</a>'
-                    +'<a class="dropdown-item btnManageClient" style="cursor:pointer;background:gold">Manage Member</a>'
-                    +'<a class="dropdown-item btnRemoveClient" style="cursor:pointer;background:red">Hapus</a>'
+                    +'<a class="dropdown-item btnManageClient" style="cursor:pointer;background:gold">Pengaturan Anggota</a>'
+                    +'<div class="dropdown-divider"></div>'
+                    +'<a class="dropdown-item btnRemoveClient" style="cursor:pointer;color:red">Hapus</a>'
                   +'</div>'
                   +'</div>'
           },
@@ -45,7 +46,7 @@ $(function () {
           }],
           buttons:[{
             text: 'Penambahan',
-            className:'btn btn-primary',
+            className:'btn btn-success',
             action: function ( e, dt, node, config ) {
               $('#add-category').modal({
                 backdrop:'static'
