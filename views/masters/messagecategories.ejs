@@ -81,7 +81,7 @@
                   <textarea class="form-control" id="messagecategorydescription"></textarea>
                 </div>
                 <button class="btn btn-primary" id="btnSaveMessageCategory">Simpan</button>
-
+                <button class="btn btn-warning" id="btnTest">test</button>
               </div>
               <!-- /.card-body -->
             </div>
@@ -109,7 +109,7 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-<%- include('../contacts/modal-manage-contact') -%>
+<%- include('../messagecategory/modal_confirmation') -%>
 <!-- jQuery -->
 <script src="/assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -165,6 +165,22 @@
     })
   }
   $('#btnSaveMessageCategory').click(function(){
+    if(checkEmpty($('#messagecategoryname'))){
+      showModal({
+        modalinfo:"Akan menambahkan Kategori Pesan di menu"
+      })
+    }else{
+      $('#confirmation-invalid').modal()
+    }
+  })
+  doCheck = obj => {
+    return checkEmpty(obj)
+  }
+  showModal = (obj) => {
+    $("#modalinfo").html(obj.modalinfo)
+    $('#confirmation-add-messagecategory').modal()
+  }
+  $('#btnConfirmYes').on('click',function(){
     if($('#messageCategoryParentId').select2('data').length>0){
       saveCustomMaster({
         selectedParent:$('#messageCategoryParentId').select2('data')[0].id
@@ -172,15 +188,22 @@
     }else{
       saveCustomMaster({selectedParent:0})
     }
+    txtMenu = '<li class="nav-item">'
+      txtMenu+= '<a href="/main" class="nav-link">'
+      txtMenu+= '<i class="nav-icon fas fa-th"></i>'
+      txtMenu+= '<p>'
+      txtMenu+= $('#messagecategoryname').val()
+      txtMenu+= '</p>'
+      txtMenu+= '</a>'
+      txtMenu+= '</li>'
+      $('.nav.nav-pills.nav-sidebar.flex-column').append(txtMenu)    
   })
-  populateParent = _ => {
-    $.ajax({
-      url:'/'
-    })
-    .done(res=>{
-      $('#messageCategoryParentId')
-    })
-  }
+  $('#btnConfirmNo').on('click',function(){
+    console.log("ga jadi")
+  })
+
+  populateCustomMenu()
+
 </script>
 </body>
 </html>

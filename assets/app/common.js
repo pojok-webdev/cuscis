@@ -8,3 +8,10 @@ $.fn.stairUp = function(options){
 	}
 	return out;
 }
+checkEmpty = obj => {
+	if((obj.val()).trim()===""){
+		return false
+	}else{
+		return true
+	}
+}
