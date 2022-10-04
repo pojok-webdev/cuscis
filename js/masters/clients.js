@@ -17,7 +17,7 @@ $(function () {
         },
         "columnDefs": [ 
           {
-              "targets": 8,
+              "targets": 9,
               "data": null,
               "defaultContent":'<div class="btn-group">'
               +'<button type="button" class="btn btn-default">Aksi</button>'
@@ -220,6 +220,7 @@ $(function () {
         $('#editClientLocationID').val(res[0].location_id)
         $('#editClientAddress').val(res[0].address)
         $('#editClientFB').val(res[0].kdfb)
+        $('#editNetwork').val(res[0].ou)
         $('#edit-client').modal({
           backdrop:'static'
         })
@@ -270,7 +271,8 @@ $(function () {
           prevAddress:$('#tObj tbody tr.selected').find('.address').text(),
           prevPicname:$('#tObj tbody tr.selected').find('.picname').text(),
           prevPicwa:$('#tObj tbody tr.selected').find('.picwa').text(),
-          prevKdfb:$('#tObj tbody tr.selected').find('.kdfb').text()
+          prevKdfb:$('#tObj tbody tr.selected').find('.kdfb').text(),
+          ou:$('#editNetwork').val()
         },
         dataType:'json'
       })
@@ -318,6 +320,7 @@ $(function () {
           picwa:$('#addClientPicWa').val(),
           description:$('#addClientDescription').val(),
           kdfb:$('#addClientFB').val(),
+          ou:$('#addNetwork').val()
         }
       })
       .done(res=>{
@@ -331,6 +334,7 @@ $(function () {
           $('#addClientPicWa').val(),
           $('#addClientDescription').val(),
           $('#addClientFB').val(),
+          $('#addNetwork').val()
         ]).draw()
       })
       .fail(err=>{

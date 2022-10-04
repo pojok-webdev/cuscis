@@ -112,11 +112,11 @@ i.app.get('/dataclients',(req,res)=>{
   i.con.doQuery(
     i.crud.gets({
       tableName:'qiscus.clients',
-      cols:['id','name','location_id','address','picname','picwa','description','kdfb'],
+      cols:['id','name','location_id','address','picname','picwa','description','kdfb','ou'],
       conditions:[{key:'1',val:'1'}]
     }),result=>{
       res.send({data:result.map(obj=>{
-        return [obj.id,obj.name,obj.location_id,obj.address,obj.picname,obj.picwa,obj.description,obj.kdfb]
+        return [obj.id,obj.name,obj.location_id,obj.address,obj.picname,obj.picwa,obj.description,obj.kdfb,obj.ou]
       })})
     }
   )
@@ -148,6 +148,7 @@ i.app.post('/saveclient',(req,res)=>{
         {key:'picwa',val:params.picwa},
         {key:'description',val:params.description},
         {key:'kdfb',val:params.kdfb},
+        {key:'ou',val:params.ou},
       ]
     }),
     result=>{
@@ -167,7 +168,7 @@ i.app.get('/getclient/:id',(req,res)=>{
   i.con.doQuery(
     i.crud.gets({
       tableName:'qiscus.clients',
-      cols:['id','name','location_id','address','description','picname','picwa','kdfb'],
+      cols:['id','name','location_id','address','description','picname','picwa','kdfb','ou'],
       conditions:[{key:'id',val:params.id}]
     }),
     result=>{
@@ -200,7 +201,8 @@ i.app.post('/updateclient',(req,res)=>{
       {key:'description',val:params.description},
       {key:'picname',val:params.picname},
       {key:'picwa',val:params.picwa},
-      {key:'kdfb',val:params.kdfb}
+      {key:'kdfb',val:params.kdfb},
+      {key:'ou',val:params.ou},
     ],
     conditions:[{key:'id',val:params.id}]
   }))
@@ -214,7 +216,8 @@ i.app.post('/updateclient',(req,res)=>{
         {key:'description',val:params.description},
         {key:'picname',val:params.picname},
         {key:'picwa',val:params.picwa},
-        {key:'kdfb',val:params.kdfb}
+        {key:'kdfb',val:params.kdfb},
+        {key:'ou',val:params.ou},
       ],
       conditions:[{key:'id',val:params.id}]
     }),
