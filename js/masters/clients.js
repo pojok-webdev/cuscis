@@ -129,12 +129,13 @@ $(function () {
       tr.addClass('selected')
       trid = tr.find('.trid').text()
       clientname = tr.find('.name').text()
+      location_id = tr.find('.location_id').text()
       $.ajax({
         url:'/getcategoriesbyclient/'+trid
       })
       .done(res=>{
         console.log('Res',res)
-        $('#modalEditCategoryClient').html(' <strong>'+clientname+'</strong>')
+        $('#modalEditCategoryClient').html(' <strong>'+clientname+' ('+location_id+')</strong>')
         dtReserve = $('#tReserve').DataTable({
           "info": false,destroy:true,
           columnDefs:[
@@ -277,8 +278,20 @@ $(function () {
         dataType:'json'
       })
       .done(res=>{
+        tr = $('#tObj tr.selected')
+        tr.find('.name').html($('#editClientName').val())
+        tr.find('.location_id').html($('#editClientLocationID').val())
+        tr.find('.address').html($('#editClientAddress').val())
+        tr.find('.picname').html($('#editClientPicName').val())
+        tr.find('.picwa').html($('#editClientPicWa').val())
+        tr.find('.description').html($('#editClientDescription').val())
+        tr.find('.kdfb').html($('#editClientFB').val())
         console.log("update invoked",res)
-        dt.ajax.reload()
+        if(1==2){
+          dt.ajax.reload()
+        }else{
+
+        }
       })
       .fail(err=>{
         console.log(err)
@@ -292,20 +305,38 @@ $(function () {
       })
       tr.addClass('selected')
       console.log('U click ',tr.find('.trid').text())
-      $('#confirmRemoveCustomData').modal()
+      $.ajax({
+        url:'/getcategoriesbyclient/'+tr.find('.trid').text()
+      })
+      .done(res=>{
+        $('#el-title').html("Penghapusan Pelanggan")
+        $('#questio').html("Terdapat <b>"+res.length+"</b> pelanggan terasosiasi dengan pelanggan ini ("+tr.find('.name').text()+")")
+        $('#el-info').html("Ke-<b>"+res.length+"</b> asosiasi akan ikut <span style='color:red'>terhapus !!!</span>")
+        $('#confirmRemoveCustomData').modal()
+      })
+      .fail(err=>{
+        console.log("error count categories",err)
+      })
     })
 
     $('#btnYesRemoveCustomData').click(function(){
       $.ajax({
-        url:'/removeclient/'+$('#tObj tr.selected').find('.trid').text()
+        url:'/disassociateclient/'+$('#tObj tr.selected').find('.trid').text()
       })
       .done(res=>{
-        console.log('Res',res)
-        $('#tObj tr.selected').remove()
+        console.log("Rezz disassociate client",res)
+        $.ajax({
+          url:'/removeclient/'+$('#tObj tr.selected').find('.trid').text()
+        })
+        .done(res=>{
+          console.log('Res',res)
+          $('#tObj tr.selected').remove()
+        })
+        .fail(err=>{
+          console.log('Err',err)
+        })  
       })
-      .fail(err=>{
-        console.log('Err',err)
-      })
+      .fail(err=>{})
     })
     $('#btnSaveClient').click(function(){
       $.ajax({

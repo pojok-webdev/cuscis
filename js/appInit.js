@@ -10,6 +10,7 @@ sha1 = require('sha1'),
 sessions = require('express-session'),
 messages = require('./../assets/app/sending/messageproviders'),
 bodyParser = require('body-parser'),
+categorychildren = require('./masters/categorychildren'),
 auth = require('./../assets/app/auth')
 app.set('views', './views');
 app.set('view engine','ejs')
@@ -33,5 +34,6 @@ module.exports = {
     sha1:sha1,
     auth:auth,
     logging:logging,
-    master:master
+    master:master,
+    categorychildren:categorychildren
 }
