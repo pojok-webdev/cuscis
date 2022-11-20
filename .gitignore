@@ -1,3 +1,10 @@
 node_modules/
 sqltools_20220627081533_8036.log
 js/appSetting.js
+clients.sql
+clientsites.sql
+import20201004.sql
+qiscus20221007.sql
+qiscus20221021.sql
+teknisusers20221007.sql
+tmp.sql

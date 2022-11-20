@@ -1,23 +1,401 @@
-getClient()
-.getCategory()
+select id,parent_id from messagecategories where parent_id is not null;
+
+select a.id,a.parent_id from messagecategories a left outer join messagecategories b on b.parent_id=a.id where b.parent_id is not null;
+
+select a.id,a.parent_id from messagecategories a left outer join messagecategories b on b.parent_id=a.id where b.parent_id is null;
+
+select a.id,a.parent_id from qiscus.messagecategories a left outer join qiscus.messagecategories b on b.parent_id=a.id where b.parent_id <>12 or b.parent_id is null ;
+
+
+select a.id,a.parent_id from qiscus.messagecategories a where a.parent_id <>12 ;
+
+
+cari parent_id
+select a.id,a.parent_id from qiscus.messagecategories a left outer join qiscus.messagecategories b on b.id=a.parent_id 
+
+#######################################################
+TEMPLATE:
+delimiter $$
+create function getancestors(
+    id
+)
+returns int 
+deterministic
+begin
+
+end $$
+
+
+delimiter $$
+create function getancestors(
+    id int
+)
+returns int 
+deterministic
+begin
+    SELECT id ,parent_id FROM messagecategories a where a.id= id
+end $$
+
+https://dev.mysql.com/doc/refman/8.0/en/with.html#common-table-expressions
+
+WITH RECURSIVE x AS
+(
+  SELECT 1 AS n, CAST('abc' AS CHAR(20)) AS str
+  UNION ALL
+  SELECT n + 1, CONCAT(str, str) FROM x WHERE n < 3
+)
+SELECT * FROM x;
+
+WITH cte AS
+(
+  SELECT 1 AS col1, 2 AS col2
+  UNION ALL
+  SELECT 3, 4
+)
+SELECT col1, col2 FROM cte;
+
+
+WITH cte AS
+(
+  SELECT id, parent_id from messagecategories where parent_id is not null
+  UNION ALL
+  SELECT 3, 4
+)
+SELECT id, parent_id FROM cte;
+
+
+
+WITH RECURSIVE cte AS
+(
+  SELECT 1 AS n, 1 AS p, -1 AS q
+  UNION ALL
+  SELECT n + 1, q * 2, p * 2 FROM cte WHERE n < 5
+)
+SELECT * FROM cte;
 
 
 
 
-getObjs = obj => {
-    return {
-        getCategory : _ => {
-            return getObjs({})
-        },
-        getClient : _ => {
-            return getObjs({})
-        }
-    }
-}
+WITH RECURSIVE cte AS
+(
+  SELECT id,parent_id from messagecategories
+  UNION ALL
+  SELECT id,parent_id FROM messagecategories WHERE parent_id = cte.id
+)
+SELECT * FROM cte;
+
+
+WITH previous AS 
+( 
+    SELECT id  
+    FROM Messages 
+    WHERE id = 957 
+
+    UNION ALL 
+
+    SELECT cur.id 
+    FROM Messages cur
+    INNER JOIN previous ON cur.previousMessageID = previous.id
+) 
+SELECT * FROM previous 
+;
 
 
 
 
-getObjs({})
-.getCategory()
-.getClient()
+declare @table table(id int,   previousMessageId int)
+insert into @table select 957 , 956
+insert into @table select 956 , 950
+insert into @table select 950 , NULL
+insert into @table select 999 , 998
+insert into @table select 998 , 997
+insert into @table select 997 , NULL
+
+;
+WITH previous 
+     AS (SELECT id, 
+                previousmessageid 
+         FROM   @table 
+         WHERE  id = 957
+         UNION ALL 
+         SELECT cur.id, 
+                cur.previousmessageid 
+         FROM   @table cur 
+                INNER JOIN previous 
+                        ON cur.id = previous.previousmessageid) 
+SELECT ID 
+FROM   previous 
+WHERE  previousmessageid IS NULL ;
+
+
+
+
+WITH ancestor AS (
+    select id,parent_id from messagecategories where id=40
+    union all 
+    select cur.id,cur.parent_id from messagecategories cur left outer join ancestor on ancestor.id=cur.parent_id 
+)
+select id,parent_id from ancestor where parent_id is null ;
+
+
+
+WITH RECURSIVE ancestor AS (
+    select 1 as n, id,parent_id from messagecategories where id=40
+    union all 
+    select n+1, cur.id,cur.parent_id from ancestor left outer join messagecategories cur on ancestor.id=cur.parent_id 
+    where n<100
+)
+select id,parent_id from ancestor where parent_id is null ;
+
+
+
+WITH RECURSIVE cte AS
+(
+  SELECT 1 AS n, 1 AS p, -1 AS q
+  UNION ALL
+  SELECT n + 1, q * 2, p * 2 FROM cte WHERE n < 5
+)
+SELECT * FROM cte;
+
+///ok
+
+WITH RECURSIVE ancestor AS (
+    select 1 as n, id,parent_id from messagecategories 
+    union all 
+    select n+1, cur.id,cur.parent_id from ancestor 
+    left outer join messagecategories cur on ancestor.id=cur.parent_id 
+    where n<1000
+)
+select id,parent_id from ancestor  where parent_id is not null ;
+
+
+select * from (
+WITH RECURSIVE ancestor AS (
+    select 1 as n, 1 ancestorid,id,parent_id from messagecategories 
+    union all 
+    select n+1, ancestor.id,cur.id,cur.parent_id from ancestor 
+    left outer join messagecategories cur on ancestor.id=cur.parent_id 
+    where n<1000
+)
+select n,ancestorid,id,parent_id from ancestor  where parent_id is not null )x order by parent_id,id,n;
+
+select a.id level1,b.id level2,c.id level3,d.id level4,e.id level5 from messagecategories a 
+left outer join messagecategories b on b.id=a.parent_id
+left outer join messagecategories c on c.id=b.parent_id
+left outer join messagecategories d on d.id=c.parent_id 
+left outer join messagecategories e on e.id=d.parent_id 
+where a.id < 41;
+
+select a.id level1,b.id level2,c.id level3,d.id level4,e.id level5,f.id level6 from messagecategories a 
+left outer join messagecategories b on b.id=a.parent_id
+left outer join messagecategories c on c.id=b.parent_id
+left outer join messagecategories d on d.id=c.parent_id 
+left outer join messagecategories e on e.id=d.parent_id 
+left outer join messagecategories f on f.id=e.parent_id 
+where a.id < 41;
+
+
+
+
+ select id,parent_id from messagecategories where parent_id is not null;
+
+select * from (
+WITH RECURSIVE ancestor AS (
+    select 1 as n, 1 ancestorid,id,parent_id from messagecategories 
+    union all 
+    select n+1, ancestor.id,cur.id,cur.parent_id from ancestor 
+    left outer join messagecategories cur on ancestor.id=cur.parent_id 
+    where n<4
+)
+select n,ancestorid,id,parent_id from ancestor  where parent_id is not null )x order by parent_id,id,n;
+
+
+
+#GET CHILDREN
+select a.id,b.id from messagecategories a 
+left outer join messagecategories b on b.parent_id=a.id 
+
+with RECURSIVE children as (
+  select 1 as n, id,parent_id from messagecategories 
+  union all
+  select n+1, cur.id,cur.parent_id from children left outer join messagecategories cur on cur.id=children.parent_id
+  where n<2
+)
+select * from children where parent_id is not null;
+
+create function getchildren(id int) returns 
+begin
+
+end
+
+select a.id,a.parent_id,b.x from messagecategories a left outer join  (select group_concat(parent_id)x from messagecategories where parent_id is not null)b on .parent_id in b.x;
+
+select a.id,b.id,c.id,d.id,e.id from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id where a.id=345
+
+
+
+[
+  {"level1":345,"level2":346,"level3":12,"level4":10,"level5":null},
+  {"level1":345,"level2":346,"level3":12,"level4":14,"level5":null},
+  {"level1":345,"level2":346,"level3":12,"level4":16,"level5":null},
+  {"level1":345,"level2":344,"level3":null,"level4":null,"level5":null}
+]
+
+[
+  {"level1":345,"level2":346,"level3":12,"level4":10,"level5":null},
+  {"level1":345,"level2":346,"level3":12,"level4":14,"level5":null},
+  {"level1":345,"level2":346,"level3":12,"level4":16,"level5":null},
+  {"level1":345,"level2":343,"level3":null,"level4":null,"level5":null},
+  {"level1":345,"level2":344,"level3":null,"level4":null,"level5":null}
+]
+
+
+
+select a.id level1,b.id level2,c.id level3,d.id level4,e.id level5 from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+
+
+
+select group_concat(distinct level2) from(select a.id level1,b.id level2,c.id level3,d.id level4,e.id level5 from qiscus.messagecategories a left outer join qiscus.messagecategories b on b.parent_id=a.id left outer join qiscus.messagecategories c on c.parent_id=b.id left outer join qiscus.messagecategories d on d.parent_id=c.id left outer join qiscus.messagecategories e on e.parent_id=d.id where a.id=345)x ;
+
+
+select id,level from (
+select a.id , 'level1' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select b.id, 'level2' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select c.id, 'level3' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select d.id, 'level4' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select e.id, 'level5' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+) X where id is not null ;
+
+
+
+select a.client_id,a.category_id,Y.id,Y.level from categories_clients a left outer join 
+(select id,level from (
+select a.id , 'level1' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select b.id, 'level2' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select c.id, 'level3' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select d.id, 'level4' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select e.id, 'level5' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+) X where id is not null)Y on Y.id=a.category_id where Y.id is not null;
+
+
+
+C:\jsworkspace\cuscis\index.js
+
+https://www.instagram.com/reel/CkQWqC4vCip/?utm_source=ig_web_copy_link
+
+
+
+
+
+
+
+
+
+
+
+select a.client_id,a.category_id,Y.id,Y.level,c.picwa from categories_clients a left outer join 
+(select id,level from (
+select a.id , 'level1' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select b.id, 'level2' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select c.id, 'level3' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select d.id, 'level4' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+union
+select e.id, 'level5' level from qiscus.messagecategories a 
+left outer join qiscus.messagecategories b on b.parent_id=a.id 
+left outer join qiscus.messagecategories c on c.parent_id=b.id 
+left outer join qiscus.messagecategories d on d.parent_id=c.id 
+left outer join qiscus.messagecategories e on e.parent_id=d.id 
+where a.id=345
+) X where id is not null)Y on Y.id=a.category_id 
+left outer join clients c on c.id=a.client_id
+where Y.id is not null and c.picwa  is not null;

@@ -9,3 +9,19 @@ setelah terjadi komplain dari pelanggan:
 Puji:
 log
 user management
++62 895-3531-58333
++62 896-6275-3777
++62 899-1405-888
++62 896-6058-7440
+
++62895353158333 (TS Bali)
++6289662753777 (TS Malang)
++628991405888 (TS Surabaya)
++6289660587440 (TS Jakarta)
+
+
+AAA
+BBB
+CCC
+DDD
+select b.id,b.name,b.description from qiscus.categories_clients a left outer join qiscus.messagecategories b on b.id=a.category_id where client_id=24 ;
